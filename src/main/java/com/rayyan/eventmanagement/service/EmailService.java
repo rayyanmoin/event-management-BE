@@ -1,9 +1,14 @@
 package com.rayyan.eventmanagement.service;
 
+import com.rayyan.eventmanagement.model.EventTemplate;
+import com.rayyan.eventmanagement.repositories.EventTemplateRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import jakarta.mail.internet.MimeMessage;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import java.util.regex.Matcher;
 
 import java.util.List;
 
@@ -11,27 +16,45 @@ import java.util.List;
 public class EmailService {
 
     private final JavaMailSender mailSender;
+    private final EventTemplateRepository eventTemplateRepository;
 
     @Value("${app.mail.from}")
     private String fromEmail;
 
-    public EmailService(JavaMailSender mailSender) {
+    public EmailService(JavaMailSender mailSender,EventTemplateRepository eventTemplateRepository) {
         this.mailSender = mailSender;
+        this.eventTemplateRepository = eventTemplateRepository;
     }
 
-    public void sendEventInvites(String eventTitle, String description, String location, String eventDate, String eventTime,List<String> recipientEmails) {
+    public void sendEventInvites(String eventTitle, String description, String location, String eventDate, String eventTime, List<String> recipientEmails) {
+
+        EventTemplate eventTemplate = eventTemplateRepository.findByName("party_template");
+        String htmlTemplate = eventTemplate.getBody();
+
         for (String toEmail : recipientEmails) {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(fromEmail);
-            message.setTo(toEmail);
-            message.setSubject("You're invited to: " + eventTitle);
+            try {
+                MimeMessage mimeMessage = mailSender.createMimeMessage();
+                MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-            String body = String.format("Event: %s\nDescription: %s\nLocation: %s\nDate: %s\nTime: %s",
-                    eventTitle, description, location, eventDate, eventTime);
+                helper.setFrom(fromEmail);
+                helper.setTo(toEmail);
+                helper.setSubject("You're invited to: " + eventTitle);
 
-            message.setText(body);
+                // Safe replacement of placeholders
+                String htmlBody = htmlTemplate
+                        .replaceAll("\\$\\{title}", Matcher.quoteReplacement(eventTitle))
+                        .replaceAll("\\$\\{description}", Matcher.quoteReplacement(description))
+                        .replaceAll("\\$\\{location}", Matcher.quoteReplacement(location))
+                        .replaceAll("\\$\\{eventdate}", Matcher.quoteReplacement(eventDate))
+                        .replaceAll("\\$\\{time}", Matcher.quoteReplacement(eventTime));
 
-            mailSender.send(message);
+                helper.setText(htmlBody, true); // HTML mode
+
+                mailSender.send(mimeMessage);
+
+            } catch (Exception e) {
+                e.printStackTrace(); // Better to log
+            }
         }
     }
 }

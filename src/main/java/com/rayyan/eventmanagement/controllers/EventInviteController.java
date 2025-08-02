@@ -25,7 +25,7 @@ public class EventInviteController {
         List<EventInvites> invites = eventInviteRepository.findAll()
                 .stream()
                 .filter(invite -> invite.getEventId().equals(eventId))
-                .collect(Collectors.toList());
+                .toList();
 
         if (invites.isEmpty()) {
             return "No invites found for event ID: " + eventId;
