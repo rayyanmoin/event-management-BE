@@ -3,7 +3,6 @@ package com.rayyan.eventmanagement.service;
 import com.rayyan.eventmanagement.model.EventTemplate;
 import com.rayyan.eventmanagement.repositories.EventTemplateRepository;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import jakarta.mail.internet.MimeMessage;
