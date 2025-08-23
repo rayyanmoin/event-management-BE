@@ -1,6 +1,7 @@
 package com.rayyan.eventmanagement.controllers;
 
 import com.rayyan.eventmanagement.dto.EventAddDto;
+import com.rayyan.eventmanagement.dto.EventDropDto;
 import com.rayyan.eventmanagement.dto.EventsDto;
 import com.rayyan.eventmanagement.dto.UserDto;
 import com.rayyan.eventmanagement.service.EventService;
@@ -23,6 +24,11 @@ public class EventController {
     @GetMapping("/list")
     public List<EventsDto> getlist(){
         return eventService.getlist();
+    }
+
+    @GetMapping("/droplist")
+    public List<EventDropDto> getDroplist(){
+        return eventService.getDroplist();
     }
 
     @PostMapping("/add")

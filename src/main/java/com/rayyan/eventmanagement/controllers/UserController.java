@@ -1,5 +1,7 @@
 package com.rayyan.eventmanagement.controllers;
 
+import com.rayyan.eventmanagement.dto.EventDropDto;
+import com.rayyan.eventmanagement.dto.UserDropDto;
 import com.rayyan.eventmanagement.dto.UserDto;
 import com.rayyan.eventmanagement.service.UserService;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,11 @@ public class UserController {
     @GetMapping("/list")
     public List<UserDto> getlist(){
         return userService.getlist();
+    }
+
+    @GetMapping("/droplist")
+    public List<UserDropDto> getDroplist(){
+        return userService.getDroplist();
     }
 
     @PostMapping("/add")

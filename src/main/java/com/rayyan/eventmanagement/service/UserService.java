@@ -1,6 +1,9 @@
 package com.rayyan.eventmanagement.service;
 
+import com.rayyan.eventmanagement.dto.EventDropDto;
+import com.rayyan.eventmanagement.dto.UserDropDto;
 import com.rayyan.eventmanagement.dto.UserDto;
+import com.rayyan.eventmanagement.model.Event;
 import com.rayyan.eventmanagement.model.User;
 import com.rayyan.eventmanagement.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +51,19 @@ public class UserService {
 
     userRepository.save(user);
     return "User Added/Edited Succcesfully";
+    }
+
+
+    public List<UserDropDto> getDroplist() {
+        List<UserDropDto> userDropDtos = new ArrayList<>();
+        List<User> users = userRepository.findAll();
+        for (User user : users) {
+            UserDropDto userDTO = new UserDropDto();
+            userDTO.setId(user.getId());
+            userDTO.setName(user.getName());
+            userDropDtos.add(userDTO);
+        }
+        return userDropDtos;
     }
 
 

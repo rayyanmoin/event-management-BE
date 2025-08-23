@@ -2,6 +2,7 @@ package com.rayyan.eventmanagement.service;
 
 import com.rayyan.eventmanagement.controllers.EventController;
 import com.rayyan.eventmanagement.dto.EventAddDto;
+import com.rayyan.eventmanagement.dto.EventDropDto;
 import com.rayyan.eventmanagement.dto.EventsDto;
 import com.rayyan.eventmanagement.dto.UserDto;
 import com.rayyan.eventmanagement.model.Event;
@@ -20,6 +21,7 @@ public class EventService {
     @Autowired
     EventRepository eventRepository;
 
+
     public List<EventsDto> getlist() {
         List<EventsDto> eventsDtos = new ArrayList<>();
         List<Event> events = eventRepository.findAll();
@@ -37,6 +39,18 @@ public class EventService {
         }
     return eventsDtos;
 
+    }
+
+    public List<EventDropDto> getDroplist() {
+        List<EventDropDto> eventdropDtos = new ArrayList<>();
+        List<Event> events = eventRepository.findAll();
+        for (Event event : events) {
+            EventDropDto eventsDto = new EventDropDto();
+            eventsDto.setId(event.getId());
+            eventsDto.setTitle(event.getTitle());
+            eventdropDtos.add(eventsDto);
+        }
+        return eventdropDtos;
     }
 
     public String addEvent(EventAddDto eventAddDto){
